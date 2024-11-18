@@ -56,6 +56,10 @@ body {
     display: none;
 }
 
+.todo-list .view {
+    position: relative;
+}
+
 .todo-list .edit {
     width: 100%;
     padding: 15px 15px 15px 60px;
@@ -74,6 +78,27 @@ body {
     line-height: 1.2;
     word-break: break-all;
     color: #484848;
+}
+
+.todo-list .completed {
+    text-decoration: line-through;
+}
+
+.todo-list input[type='checkbox'] {
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    margin: auto 0;
+}
+
+.todo-list button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    margin: 0;
 }
 
 .footer {

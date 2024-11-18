@@ -3,99 +3,82 @@ const listContainer = document.getElementById("todo-list");
 const todoCount = document.getElementById("todo-count");
 const footer = document.getElementById("footer");
 
-const addTodo = (e) => {
+let taskList = [];
+
+const getNumbersFromString = (str) => +str.replace(/\D/g, "");
+
+const renderTasks = () => {
+  listContainer.innerHTML = "";
+
+  taskList.forEach((element) => {
+    const listElement = document.createElement("li");
+    const viewBox = document.createElement("div");
+    const checkbox = document.createElement("input");
+    const title = document.createElement("label");
+    const deleteButton = document.createElement("button");
+
+    listElement.id = `task-${element.id}`;
+    viewBox.className = "view";
+    checkbox.id = `check-${element.id}`;
+    checkbox.type = "checkbox";
+    checkbox.checked = element.chekedState;
+    title.innerHTML = element.title;
+    deleteButton.id = `btn-${element.id}`;
+    deleteButton.innerHTML = "X";
+
+    viewBox.appendChild(checkbox);
+    viewBox.appendChild(title);
+    viewBox.appendChild(deleteButton);
+    listElement.appendChild(viewBox);
+    listContainer.appendChild(listElement);
+
+    deleteButton.onclick = deleteTask;
+
+    // if (checkbox.checked == true) {
+    //   title.classList.add("completed");
+    // } else if (checkbox.checked == false) {
+    //   title.classList.remove("completed");
+    // };
+  });
+
+  todoCount.innerHTML = taskList.length;
+
+  displayFooter();
+};
+
+const deleteTask = (event) => {
+  const taskId = getNumbersFromString(event.target.id);
+  const filteredTasks = taskList.filter((task) => task.id !== taskId);
+  taskList = filteredTasks;
+  renderTasks();
+};
+
+const displayFooter = () => {
+  if (taskList.length > 0) {
+    footer.style.display = "flex";
+    // todoCount.innerHTML = taskList.length;
+  } else {
+    footer.style.display = "none";
+  }
+};
+
+const addTask = (e) => {
   if (e.key === "Enter") {
-    if (inputTodo.value !== "") {
-      let li = document.createElement("li");
-      let view = document.createElement("div");
-      let label = document.createElement("label");
+    if (inputTodo.value != "") {
+      const task = {
+        id: Date.now(),
+        title: inputTodo.value,
+        chekedState: false,
+        editingState: false,
+      };
 
-      listContainer.appendChild(li);
-      li.appendChild(view);
-      view.className = "view";
-      view.appendChild(label);
-      label.innerHTML = inputTodo.value;
-      todoCount.textContent = listContainer.childElementCount;
+      taskList.push(task);
 
-      li.addEventListener("dblclick", () => {
-        view.classList.add("editing");
-        let input = document.createElement("input");
-        li.appendChild(input);
-        input.classList.add("edit");
-        input.value = label.textContent;
-        input.focus();
+      renderTasks();
 
-        // if (input.onkeydown == true) {
-        //   (event) => {
-        //     if (event.key === "Enter") {
-        //       view.classList.remove("editing");
-        //       label.textContent = input.value;
-        //       input.remove();
-        //     }
-        //   }
-        // } else if (input.onblur == true) {
-        //   view.classList.remove("editing");
-        //   label.textContent = input.value;
-        //   input.remove();
-        // }
-
-        input.onkeyup = (event) => {
-          if (event.key === "Enter") {
-            view.classList.remove("editing");
-            label.textContent = input.value;
-            input.remove();
-          }
-        };
-        
-        input.onblur = () => {
-          view.classList.remove("editing");
-          label.textContent = input.value;
-          input.remove();
-        };
-      });
-
-      if (label.textContent === "") {
-        console.log("1");
-        li.remove();
-      }
-    }
-    inputTodo.value = "";
-
-    if (listContainer.childElementCount === 0) {
-      footer.style.display = "none";
-    } else {
-      footer.style.display = "flex";
+      inputTodo.value = "";
     }
   }
 };
 
-inputTodo.addEventListener("keydown", addTodo);
-
-//Константа для создания Template - хз как ей пользоватся
-/*
-const createTodoItem = ({id, title, completed, checked}) => `
-<li data=id="${id}" class="${completed}">
-    <div class="view">
-        <input class="toggle" type="checkbox" ${checked}>
-        <label>${title}</label>
-        <button class="destroy"></button>
-    </div>
-</li>
-`;
-*/
-
-// Переключение фильтров
-/*
-const filter = document.getElementsByClassName("a");
-
-filter.forEach(btn =>
-    btn.addEventListener('click', () =>  {
-        const selectedFilter = document.getElementsByClassName("a.selected")
-
-        if(selectedFilter) {
-            selectedFilter.classList.remove(".selected")
-        }
-        btn.classList.add(".selected")
-    })
-);
-*/
+inputTodo.addEventListener("keydown", addTask);
