@@ -5,7 +5,7 @@ const footer = document.getElementById("footer");
 
 let taskList = [];
 
-const renderElement = (
+const createElement = (
   htmlTag = "div",
   param = { id: Date.now(), innerHTML: "hello world", className: "div" }
 ) => {
@@ -17,18 +17,18 @@ const renderElement = (
 };
 
 const renderTasks = () => {
-  listContainer.innerHTML = "";
+  listContainer.replaceChildren();
 
   taskList.forEach((element) => {
-    const listElement = renderElement("li", { id: `task-${element.id}` });
-    const viewBox = renderElement("div", { className: "view" });
-    const checkbox = renderElement("input", {
+    const listElement = createElement("li", { id: `task-${element.id}` });
+    const viewBox = createElement("div", { className: "view" });
+    const checkbox = createElement("input", {
       id: `check-${element.id}`,
       type: "checkbox",
       checked: element.chekedState,
     });
-    const title = renderElement("label", { innerHTML: element.title });
-    const deleteButton = renderElement("button", {
+    const title = createElement("label", { innerHTML: element.title });
+    const deleteButton = createElement("button", {
       id: `btn-${element.id}`,
       innerHTML: "X",
     });
@@ -40,11 +40,48 @@ const renderTasks = () => {
     deleteButton.onclick = () => {
       deleteTask(element.id);
     };
+
+    viewBox.ondblclick = () => {
+      editTask(element.id, title.innerHTML);
+    };
+
+    if (title.innerHTML === "") {
+      deleteTask(element.id);
+    }
   });
 
   todoCount.innerHTML = taskList.length;
 
   displayFooter();
+};
+
+const editTask = (taskId, value) => {
+  const element = document.getElementById(`task-${taskId}`);
+  const input = createElement("input", { className: "edit", value: value });
+
+  element.replaceChildren();
+  element.append(input);
+  input.focus();
+  input.onkeydown = (e) => {
+    if (e.key === "Escape") {
+      input.onblur = () => renderTasks();
+      input.blur();
+    }
+    if (e.key === "Enter") {
+      input.blur();
+    }
+  };
+  input.onblur = () => {
+    let temp = input.value;
+    const newTaskList = taskList.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, title: temp };
+      }
+      return task;
+    });
+    taskList = newTaskList;
+    renderTasks();
+  };
 };
 
 const deleteTask = (taskId) => {
@@ -68,7 +105,6 @@ const addTask = (e) => {
         id: Date.now(),
         title: inputTodo.value,
         chekedState: false,
-        editingState: false,
       };
 
       taskList.push(task);
