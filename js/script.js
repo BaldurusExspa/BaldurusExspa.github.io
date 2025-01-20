@@ -5,40 +5,41 @@ const footer = document.getElementById("footer");
 
 let taskList = [];
 
-const getNumbersFromString = (str) => +str.replace(/\D/g, "");
+const renderElement = (
+  htmlTag = "div",
+  param = { id: Date.now(), innerHTML: "hello world", className: "div" }
+) => {
+  const element = document.createElement(htmlTag);
+  for (let val in param) {
+    element[val] = param[val];
+  }
+  return element;
+};
 
 const renderTasks = () => {
   listContainer.innerHTML = "";
 
   taskList.forEach((element) => {
-    const listElement = document.createElement("li");
-    const viewBox = document.createElement("div");
-    const checkbox = document.createElement("input");
-    const title = document.createElement("label");
-    const deleteButton = document.createElement("button");
+    const listElement = renderElement("li", { id: `task-${element.id}` });
+    const viewBox = renderElement("div", { className: "view" });
+    const checkbox = renderElement("input", {
+      id: `check-${element.id}`,
+      type: "checkbox",
+      checked: element.chekedState,
+    });
+    const title = renderElement("label", { innerHTML: element.title });
+    const deleteButton = renderElement("button", {
+      id: `btn-${element.id}`,
+      innerHTML: "X",
+    });
 
-    listElement.id = `task-${element.id}`;
-    viewBox.className = "view";
-    checkbox.id = `check-${element.id}`;
-    checkbox.type = "checkbox";
-    checkbox.checked = element.chekedState;
-    title.innerHTML = element.title;
-    deleteButton.id = `btn-${element.id}`;
-    deleteButton.innerHTML = "X";
-
-    viewBox.appendChild(checkbox);
-    viewBox.appendChild(title);
-    viewBox.appendChild(deleteButton);
+    viewBox.append(checkbox, title, deleteButton);
     listElement.appendChild(viewBox);
     listContainer.appendChild(listElement);
 
-    deleteButton.onclick = deleteTask;
-
-    // if (checkbox.checked == true) {
-    //   title.classList.add("completed");
-    // } else if (checkbox.checked == false) {
-    //   title.classList.remove("completed");
-    // };
+    deleteButton.onclick = () => {
+      deleteTask(element.id);
+    };
   });
 
   todoCount.innerHTML = taskList.length;
@@ -46,8 +47,7 @@ const renderTasks = () => {
   displayFooter();
 };
 
-const deleteTask = (event) => {
-  const taskId = getNumbersFromString(event.target.id);
+const deleteTask = (taskId) => {
   const filteredTasks = taskList.filter((task) => task.id !== taskId);
   taskList = filteredTasks;
   renderTasks();
@@ -56,7 +56,6 @@ const deleteTask = (event) => {
 const displayFooter = () => {
   if (taskList.length > 0) {
     footer.style.display = "flex";
-    // todoCount.innerHTML = taskList.length;
   } else {
     footer.style.display = "none";
   }
