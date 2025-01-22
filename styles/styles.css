@@ -52,10 +52,6 @@ body {
     border-bottom: 1px solid #ededed;
 }
 
-.todo-list .view.editing {
-    display: none;
-}
-
 .todo-list .view {
     position: relative;
 }
@@ -80,7 +76,7 @@ body {
     color: #484848;
 }
 
-.todo-list .completed {
+.todo-list .completed-true {
     text-decoration: line-through;
 }
 

@@ -25,9 +25,12 @@ const renderTasks = () => {
     const checkbox = createElement("input", {
       id: `check-${element.id}`,
       type: "checkbox",
-      checked: element.chekedState,
+      checked: element.checkedState,
     });
-    const title = createElement("label", { innerHTML: element.title });
+    const title = createElement("label", {
+      innerHTML: element.title,
+      className: `completed-${element.checkedState}`,
+    });
     const deleteButton = createElement("button", {
       id: `btn-${element.id}`,
       innerHTML: "X",
@@ -48,11 +51,34 @@ const renderTasks = () => {
     if (title.innerHTML === "") {
       deleteTask(element.id);
     }
+
+    checkbox.onchange = () => {
+      toggleTask(element.id);
+    };
   });
 
   todoCount.innerHTML = taskList.length;
 
   displayFooter();
+};
+
+const toggleTask = (taskId) => {
+  const newTaskList = taskList.map((task) => {
+    const state = task.checkedState;
+    const antiState = !state;
+    // element.checked = antiState;
+
+    if (task.id === taskId) {
+      if (task.checkedState === state) {
+        return { ...task, checkedState: antiState };
+      }
+    }
+    return task;
+  });
+
+  taskList = newTaskList;
+
+  renderTasks();
 };
 
 const editTask = (taskId, value) => {
@@ -79,14 +105,18 @@ const editTask = (taskId, value) => {
       }
       return task;
     });
+
     taskList = newTaskList;
+
     renderTasks();
   };
 };
 
 const deleteTask = (taskId) => {
   const filteredTasks = taskList.filter((task) => task.id !== taskId);
+
   taskList = filteredTasks;
+
   renderTasks();
 };
 
@@ -104,7 +134,7 @@ const addTask = (e) => {
       const task = {
         id: Date.now(),
         title: inputTodo.value,
-        chekedState: false,
+        checkedState: false,
       };
 
       taskList.push(task);
