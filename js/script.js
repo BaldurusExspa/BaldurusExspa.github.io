@@ -137,7 +137,8 @@ const addTask = (e) => {
         checkedState: false,
       };
 
-      taskList.push(task);
+      // taskList.push(task);
+      taskList.unshift(task);
 
       renderTasks();
 
