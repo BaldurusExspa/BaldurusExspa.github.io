@@ -65,15 +65,13 @@ const renderTasks = () => {
 const toggleTask = (taskId) => {
   const newTaskList = taskList.map((task) => {
     const state = task.checkedState;
-    const antiState = !state;
-    // element.checked = antiState;
 
-    if (task.id === taskId) {
-      if (task.checkedState === state) {
-        return { ...task, checkedState: antiState };
-      }
-    }
-    return task;
+    const resultObject =
+      task.id === taskId && task.checkedState === state
+        ? { ...task, checkedState: !state }
+        : task;
+
+    return resultObject;
   });
 
   taskList = newTaskList;
