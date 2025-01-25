@@ -2,6 +2,7 @@ const inputTodo = document.getElementById("new-todo");
 const listContainer = document.getElementById("todo-list");
 const todoCount = document.getElementById("todo-count");
 const footer = document.getElementById("footer");
+const filterButtons = document.querySelectorAll("a[data-id=filter]");
 
 let taskList = [];
 
@@ -17,6 +18,9 @@ const createElement = (
 };
 
 const renderTasks = () => {
+  const activeTasks = taskList.filter((task) => !task.checkedState);
+  todoCount.innerHTML = activeTasks.length;
+
   listContainer.replaceChildren();
 
   taskList.forEach((element) => {
@@ -55,24 +59,20 @@ const renderTasks = () => {
     checkbox.onchange = () => {
       toggleTask(element.id);
     };
-  });
 
-  todoCount.innerHTML = taskList.length;
+    checkbox.ondblclick = (event) => {
+      event.stopPropagation();
+    };
+  });
 
   displayFooter();
 };
 
 const toggleTask = (taskId) => {
-  const newTaskList = taskList.map((task) => {
-    const state = task.checkedState;
-
-    const resultObject =
-      task.id === taskId && task.checkedState === state
-        ? { ...task, checkedState: !state }
-        : task;
-
-    return resultObject;
-  });
+  const newTaskList = taskList.map((task) => ({
+    ...task,
+    checkedState: task.id === taskId ? !task.checkedState : task.checkedState,
+  }));
 
   taskList = newTaskList;
 
@@ -128,6 +128,7 @@ const displayFooter = () => {
 
 const addTask = (e) => {
   if (e.key === "Enter") {
+    // Проверяем что за кнопка внутри event = (e) нажата
     if (inputTodo.value != "") {
       const task = {
         id: Date.now(),
@@ -145,4 +146,15 @@ const addTask = (e) => {
   }
 };
 
-inputTodo.addEventListener("keydown", addTask);
+// const filters = () => {
+//   filterButtons.forEach((element) => {
+//     element.className = "";
+
+//     element.onclick = () => {
+//       element.className = "selected";
+//       filters();
+//     };
+//   });
+// }
+
+inputTodo.addEventListener("keydown", addTask); // Отлавливает нажатия всех кнопок

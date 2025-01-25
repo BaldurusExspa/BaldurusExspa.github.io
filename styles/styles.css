@@ -105,6 +105,7 @@ body {
 } */
 
 .footer {
+    display: none;
     /* position: relative; */
     height: 20px;
     padding: 10px 15px;
