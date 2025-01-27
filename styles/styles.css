@@ -106,21 +106,20 @@ body {
 
 .footer {
     display: flex;
-    /* position: relative; */
     height: 20px;
     padding: 10px 15px;
-    justify-content: flex-start;
+    justify-content: space-around;
     align-items: center;
     font-size: 15px;
     background-color: #fff;
     /* border-top: 1px solid #e6e6e6; */
 }
 
-.footer.invisible {
+.footer.invisible, .clear-completed-button.invisible {
     display: none;
 }
 
-.footer:before {
+/* .footer:before {
     position: absolute;
     right: 0;
     left: 0;
@@ -129,6 +128,23 @@ body {
     box-shadow: 0 1px 1px rgba(0,0,0,.2),0 8px 0 -3px #f6f6f6,0 9px 1px -3px rgba(0,0,0,.2),0 16px 0 -6px #f6f6f6,0 17px 2px -6px rgba(0,0,0,.2);
     overflow: hidden;
     content: "";
+} */
+
+.footer .clear-completed-button {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.footer .clear-completed-button:hover {
+    text-decoration: underline;
+}
+
+.footer .clear-completed-button:active {
+    box-shadow: 0 0 2px 2px #cf7d7d;
+    outline: none;
 }
 
 .footer span {
@@ -141,7 +157,6 @@ body {
 }
 
 .footer .filters {
-    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;

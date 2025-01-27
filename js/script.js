@@ -5,14 +5,16 @@ const footer = document.getElementById("footer");
 const allFilterButton = document.getElementById("all");
 const activeFilterButton = document.getElementById("active");
 const completedFilterButton = document.getElementById("completed");
+const clearCompletedButton = document.getElementById("clear-completed-button");
 
-let taskList = [];
+let taskList = JSON.parse(localStorage.getItem("todos")) || [];
 let filterState = "all";
 
-const createElement = (
-  htmlTag = "div",
-  param = { id: Date.now(), innerHTML: "hello world", className: "div" }
-) => {
+const saveToLocalStorage = () => {
+  localStorage.setItem("todos", JSON.stringify(taskList));
+};
+
+const createElement = (htmlTag = "div", param = {}) => {
   const element = document.createElement(htmlTag);
   for (let val in param) {
     element[val] = param[val];
@@ -21,13 +23,9 @@ const createElement = (
 };
 
 const renderTasks = () => {
-  const competedTasks = taskList.filter((task) => task.checkedState); //TODO: Избавиться от этих переменных
-  const activeTasks = taskList.filter((task) => !task.checkedState); //TODO: Вычислять только при использовании
-
-  todoCount.innerHTML = taskList.filter((task) => !task.checkedState).length; //TODO: Перенести в displayFooter
   listContainer.replaceChildren();
 
-  сhooseList(filterState, activeTasks, competedTasks).forEach((element) => {
+  сhooseList(filterState).forEach((element) => {
     const listElement = createElement("li", { id: `task-${element.id}` });
     const viewBox = createElement("div", { className: "view" });
     const checkbox = createElement("input", {
@@ -52,6 +50,10 @@ const renderTasks = () => {
       deleteTask(element.id);
     };
 
+    deleteButton.ondblclick = (event) => {
+      event.stopPropagation();
+    };
+
     viewBox.ondblclick = () => {
       editTask(element.id, title.innerHTML);
     };
@@ -69,25 +71,35 @@ const renderTasks = () => {
     };
   });
 
-  displayFooter();
+  renderFooter();
+  saveToLocalStorage();
 };
 
-const displayFooter = () => {
+const renderFooter = () => {
+  const activeTasks = taskList.filter((task) => !task.checkedState);
+  todoCount.innerHTML = activeTasks.length;
+
   if (taskList.length > 0) {
-    footer.className = "footer";
+    footer.classList.remove("invisible");
   } else {
-    footer.className = "footer invisible";
+    footer.classList.add("invisible");
+  }
+
+  if (taskList.length - activeTasks.length > 0) {
+    clearCompletedButton.classList.remove("invisible");
+  } else {
+    clearCompletedButton.classList.add("invisible");
   }
 };
 
-const сhooseList = (fil, a, b) => {
-  if (fil === "all") {
+const сhooseList = (filter) => {
+  if (filter === "all") {
     return taskList;
   }
-  if (fil === "active") {
-    return a;
+  if (filter === "active") {
+    return taskList.filter((task) => !task.checkedState);
   }
-  return b;
+  return taskList.filter((task) => task.checkedState);
 };
 
 const toggleTask = (taskId) => {
@@ -140,6 +152,14 @@ const deleteTask = (taskId) => {
   renderTasks();
 };
 
+const deleteCompletedTask = () => {
+  const filteredTasks = taskList.filter((task) => !task.checkedState);
+
+  taskList = filteredTasks;
+
+  renderTasks();
+};
+
 const addTask = (e) => {
   if (e.key === "Enter") {
     // Проверяем что за кнопка внутри event = (e) нажата
@@ -161,19 +181,13 @@ const addTask = (e) => {
 };
 
 const changeFilter = (event) => {
-  event.target.className = "selected";
   filterState = event.target.id;
 
-  if (event.target.id === "all") {
-    activeFilterButton.className = "";
-    completedFilterButton.className = "";
-  } else if (event.target.id === "active") {
-    allFilterButton.className = "";
-    completedFilterButton.className = "";
-  } else {
-    allFilterButton.className = "";
-    activeFilterButton.className = "";
-  }
+  activeFilterButton.className = "";
+  completedFilterButton.className = "";
+  allFilterButton.className = "";
+
+  event.target.className = "selected";
 
   renderTasks();
 };
@@ -182,3 +196,6 @@ inputTodo.addEventListener("keydown", addTask); // Отлавливает наж
 allFilterButton.addEventListener("click", changeFilter);
 activeFilterButton.addEventListener("click", changeFilter);
 completedFilterButton.addEventListener("click", changeFilter);
+clearCompletedButton.addEventListener("click", deleteCompletedTask);
+
+renderTasks();
