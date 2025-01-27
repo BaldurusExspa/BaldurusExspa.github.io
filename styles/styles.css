@@ -105,7 +105,7 @@ body {
 } */
 
 .footer {
-    display: none;
+    display: flex;
     /* position: relative; */
     height: 20px;
     padding: 10px 15px;
@@ -114,6 +114,10 @@ body {
     font-size: 15px;
     background-color: #fff;
     /* border-top: 1px solid #e6e6e6; */
+}
+
+.footer.invisible {
+    display: none;
 }
 
 .footer:before {
