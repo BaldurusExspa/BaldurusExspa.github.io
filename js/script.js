@@ -6,6 +6,12 @@ const allFilterButton = document.getElementById("all");
 const activeFilterButton = document.getElementById("active");
 const completedFilterButton = document.getElementById("completed");
 const clearCompletedButton = document.getElementById("clear-completed-button");
+const markCompletedButton = document.getElementById(
+  "mark-all-as-complete-checkbox"
+);
+const markCompletedInput = document.getElementById(
+  "mark-all-as-complete-input"
+);
 
 let taskList = JSON.parse(localStorage.getItem("todos")) || [];
 let filterState = "all";
@@ -43,6 +49,7 @@ const addTask = (e) => {
       renderTasks();
 
       inputTodo.value = "";
+      markCompletedInput.checked = false;
     }
   }
 };
@@ -101,6 +108,15 @@ const сhooseList = (filter) => {
   return taskList.filter((task) => task.checkedState);
 };
 
+// Changing checked state of all tasks
+const markAllCompleted = (checked) => {
+  taskList.forEach((element) => {
+    element.checkedState = checked;
+  });
+
+  renderTasks();
+};
+
 /* ____________Render Functions____________ */
 
 // A function for render all tasks
@@ -110,7 +126,10 @@ const renderTasks = () => {
   сhooseList(filterState).forEach((element) => {
     const listElement = createElement("li", { id: `task-${element.id}` });
     const viewBox = createElement("div", { className: "view" });
-    const inputGroup = createElement("label");
+    // Custom checkbox
+    const inputGroupCheckbox = createElement("label", {
+      className: "input-group-checkbox",
+    });
     const checkbox = createElement("input", {
       id: `check-${element.id}`,
       type: "checkbox",
@@ -120,17 +139,17 @@ const renderTasks = () => {
       className: "custom-checkbox",
       checked: checkbox.checked,
     });
+    //
     const title = createElement("label", {
       innerHTML: element.title,
       className: element.checkedState ? "task-value completed" : "task-value",
     });
     const deleteButton = createElement("button", {
       id: `btn-${element.id}`,
-      innerHTML: "X",
     });
 
-    inputGroup.append(checkbox, customCheckbox);
-    viewBox.append(inputGroup, title, deleteButton);
+    inputGroupCheckbox.append(checkbox, customCheckbox);
+    viewBox.append(inputGroupCheckbox, title, deleteButton);
     listElement.appendChild(viewBox);
     listContainer.appendChild(listElement);
 
@@ -158,6 +177,12 @@ const renderTasks = () => {
       event.stopPropagation();
     };
   });
+
+  if (taskList.length > 0) {
+    markCompletedButton.classList.remove("invisible");
+  } else {
+    markCompletedButton.classList.add("invisible");
+  }
 
   renderFooter();
   saveToLocalStorage();
@@ -217,6 +242,9 @@ inputTodo.addEventListener("keydown", addTask); // Listens to all keydowns on th
 allFilterButton.addEventListener("click", changeFilter); // Listenter on filter button
 activeFilterButton.addEventListener("click", changeFilter); // Listenter on filter button
 completedFilterButton.addEventListener("click", changeFilter); // Listenter on filter button
-clearCompletedButton.addEventListener("click", deleteCompletedTask); // Listenter on bclear completed button
+clearCompletedButton.addEventListener("click", deleteCompletedTask); // Listenter on clear completed button
+markCompletedInput.addEventListener("change", () => {
+  markAllCompleted(markCompletedInput.checked);
+}); // Listener on mark all task as complete checkbox
 
 renderTasks();
