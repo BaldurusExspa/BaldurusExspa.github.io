@@ -226,7 +226,7 @@ body {
 .footer {
   position: relative;
   display: flex;
-  height: 20px;
+  min-height: 20px;
   padding: 10px 15px;
   justify-content: space-between;
   align-items: center;
@@ -324,4 +324,26 @@ body {
 
 .info a:hover {
   text-decoration: underline;
+}
+
+/* MEDIA RULES */
+
+@media screen and (max-width: 425px) {
+  .footer {
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(2, 30px);
+    grid-column-gap: 10px;
+    grid-row-gap: 0;
+  }
+
+  .footer .filters {
+    grid-area: 1/1/2/3;
+  }
+  .footer span {
+    grid-area: 2/1/3/2;
+  }
+  .footer .clear-completed-button {
+    grid-area: 2/2/3/3;
+  }
 }
