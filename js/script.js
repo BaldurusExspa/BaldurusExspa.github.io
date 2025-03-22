@@ -34,19 +34,23 @@ const createElement = (htmlTag = "div", param = {}) => {
 
 // Writing down the task data / Creating a task
 const addTask = (e) => {
+  // We check that the button inside event = (e) is pressed.
   if (e.key === "Enter") {
-    // We check that the button inside event = (e) is pressed.
-    if (inputTodo.value != "") {
-      const task = {
-        id: Date.now(),
-        title: inputTodo.value,
-        checkedState: false,
-      };
+    // Validation
+    if (/[`"'\/\\]/.test(inputTodo.value)) {
+      return false;
+    } else {
+      if (inputTodo.value != "") {
+        const task = {
+          id: Date.now(),
+          title: inputTodo.value,
+          checkedState: false,
+        };
 
-      // taskList.push(task);
-      taskList.unshift(task);
+        taskList.unshift(task);
 
-      renderTasks();
+        renderTasks();
+      }
 
       inputTodo.value = "";
       markCompletedInput.checked = false;
@@ -144,6 +148,7 @@ const renderTasks = () => {
       innerHTML: element.title,
       className: element.checkedState ? "task-value completed" : "task-value",
     });
+    title.setAttribute("maxlenght", "50");
     const deleteButton = createElement("button", {
       id: `btn-${element.id}`,
     });
@@ -220,10 +225,18 @@ const editTask = (taskId, value) => {
       input.blur();
     }
     if (e.key === "Enter") {
+      // Validation
+      if (/[`"'\/\\]/gi.test(input.value)) {
+        input.onblur = () => renderTasks();
+      }
       input.blur();
     }
   };
   input.onblur = () => {
+    // Validation
+    if (/[`"'\/\\]/gi.test(input.value)) {
+      return renderTasks();
+    }
     let temp = input.value;
     const newTaskList = taskList.map((task) => {
       if (task.id === taskId) {
