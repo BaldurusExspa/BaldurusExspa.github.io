@@ -223,7 +223,6 @@ body {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   background-color: #fff;
-  /* box-shadow: 0 0px 0px 0 rgba(0, 0, 0, .2), 0 25px 50px 0 rgba(0, 0, 0, .1); */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), /* тень снизу */
   2px 0 4px rgba(0, 0, 0, 0.1), /* тень справа */
   0 -2px 4px rgba(0, 0, 0, 0.1); /* тень сверху */
@@ -339,6 +338,21 @@ body {
 /* MEDIA RULES */
 
 @media screen and (max-width: 425px) {
+  .todoapp {
+    width: 380px;
+  }
+
+  .todo-list button {
+    margin: 0;
+    height: 100%;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #fff;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+    2px 0 4px rgba(0, 0, 0, 0.1),
+    0 -2px 4px rgba(0, 0, 0, 0.1); */
+  }
+
   .footer {
     display: grid;
     grid-template-columns: repeat(2, 50%);
@@ -346,7 +360,6 @@ body {
     grid-column-gap: 10px;
     grid-row-gap: 0;
   }
-
   .footer .filters {
     grid-area: 1/1/2/3;
   }
