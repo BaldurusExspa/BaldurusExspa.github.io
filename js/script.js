@@ -127,6 +127,10 @@ const markAllCompleted = (checked) => {
 
 // A function for render all tasks
 const renderTasks = () => {
+  console.log(taskList);
+  /* Дважды рендерит после редактирования. Не знаю почему, надо смотреть по renderTasks() */
+  //TODO:FixMe
+
   listContainer.replaceChildren();
 
   сhooseList(filterState).forEach((element) => {
@@ -172,9 +176,9 @@ const renderTasks = () => {
       editTask(element.id, title.innerHTML);
     };
 
-    if (title.innerHTML === "") {
-      deleteTask(element.id);
-    }
+    // if (title.innerHTML === "") {
+    //   deleteTask(element.id);
+    // }
 
     checkbox.onchange = () => {
       toggleTask(element.id);
@@ -228,8 +232,7 @@ const editTask = (taskId, value) => {
     }
     if (e.key === "Enter") {
       // Validation
-      if (input.value.startsWith(' ')) {
-        // input.onblur = () => renderTasks();
+      if (input.value.startsWith(" ")) {
         return false;
       }
       input.blur();
@@ -237,16 +240,22 @@ const editTask = (taskId, value) => {
   };
   input.onblur = () => {
     // Validation
-    if (input.value.startsWith(' ')) {
-      return renderTasks();
+    if (input.value.startsWith(" ")) {
+      return false;
     }
     let temp = input.value;
-    const newTaskList = taskList.map((task) => {
-      if (task.id === taskId) {
-        return { ...task, title: temp };
-      }
-      return task;
-    });
+    let newTaskList;
+
+    if (temp === "") {
+      newTaskList = taskList.filter((task) => task.id !== taskId);
+    } else {
+      newTaskList = taskList.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, title: temp };
+        }
+        return task;
+      });
+    }
 
     taskList = newTaskList;
 
