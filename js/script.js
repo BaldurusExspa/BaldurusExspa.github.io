@@ -15,6 +15,7 @@ const markCompletedInput = document.getElementById(
 
 let taskList = JSON.parse(localStorage.getItem("todos")) || [];
 let filterState = "all";
+// let validation = /[`"'\/\\]/gi;
 
 /* ____________Utils Functions____________ */
 
@@ -37,7 +38,8 @@ const addTask = (e) => {
   // We check that the button inside event = (e) is pressed.
   if (e.key === "Enter") {
     // Validation
-    if (/[`"'\/\\]/.test(inputTodo.value)) {
+    // if (!!inputTodo.value.match(validation)) {
+    if (inputTodo.value.startsWith(" ")) {
       return false;
     } else {
       if (inputTodo.value != "") {
@@ -226,15 +228,16 @@ const editTask = (taskId, value) => {
     }
     if (e.key === "Enter") {
       // Validation
-      if (/[`"'\/\\]/gi.test(input.value)) {
-        input.onblur = () => renderTasks();
+      if (input.value.startsWith(' ')) {
+        // input.onblur = () => renderTasks();
+        return false;
       }
       input.blur();
     }
   };
   input.onblur = () => {
     // Validation
-    if (/[`"'\/\\]/gi.test(input.value)) {
+    if (input.value.startsWith(' ')) {
       return renderTasks();
     }
     let temp = input.value;

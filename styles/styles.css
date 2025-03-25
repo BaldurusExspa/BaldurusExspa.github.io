@@ -86,11 +86,15 @@ body {
   color: #949494;
   font-size: 22px;
   cursor: pointer;
+  transition: color 0.2s;
 }
 .mark-all-as-complete-checkbox::before {
   position: relative;
   content: "❯";
   transform: rotate(90deg);
+}
+.mark-all-as-complete-checkbox:hover {
+  color: #cf7d7d;
 }
 .mark-all-as-complete-checkbox.invisible {
   display: none;
@@ -115,6 +119,7 @@ body {
 }
 
 .todo-list .edit {
+  z-index: 2;
   width: 90%;
   padding: 15px 0px 15px 10px;
   font-size: 24px;
@@ -233,6 +238,7 @@ body {
 }
 
 .footer {
+  z-index: 1;
   position: relative;
   display: flex;
   min-height: 20px;
@@ -248,7 +254,6 @@ body {
 }
 
 .footer:before {
-  z-index: 1;
   position: absolute;
   right: 0;
   left: 0;
@@ -301,14 +306,14 @@ body {
   border: 1px solid transparent;
   border-radius: 3px;
   cursor: pointer;
+  transition: 0.2s;
+}
+.footer li a:hover {
+  color: #cf7d7d;
 }
 
 .footer .filters li a.selected {
   border-color: #ce4646;
-}
-
-.footer .filters, .clear-completed-button, span {
-  z-index: 2;
 }
 
 /* footer */
